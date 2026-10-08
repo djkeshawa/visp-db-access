@@ -256,7 +256,8 @@ async fn endpoint_changes_and_delegation_cannot_reuse_or_extend_authority() {
     let path = format!("/clusters/{}", f.cluster);
     let stored = vda_server::db::cluster(&f.db, f.cluster).await.unwrap();
     for patch in [
-        json!({"host":"localhost"}),
+        // Must differ from the fixture host, which is "localhost" in CI.
+        json!({"host":"changed.example.invalid"}),
         json!({"port":1234}),
         json!({"database":"other"}),
         json!({"username":"other"}),
