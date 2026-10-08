@@ -12,12 +12,12 @@ jobs:
         image: postgres:17
         env: {POSTGRES_USER: vda, POSTGRES_PASSWORD: test-password, POSTGRES_DB: vda}
         ports: ['5432:5432']
-        options: --health-cmd 'pg_isready -U vda -d vda' --health-interval 5s --health-timeout 3s --health-retries 20
+        options: --health-cmd "pg_isready -U vda -d vda" --health-interval 5s --health-timeout 3s --health-retries 20
       mysql:
         image: mysql:8.4
         env: {MYSQL_ROOT_PASSWORD: test-password, MYSQL_DATABASE: vda, MYSQL_USER: vda, MYSQL_PASSWORD: test-password}
         ports: ['3306:3306']
-        options: --health-cmd 'mysqladmin ping -h localhost -ptest-password' --health-interval 5s --health-timeout 3s --health-retries 20
+        options: --health-cmd "mysqladmin ping -h localhost -ptest-password" --health-interval 5s --health-timeout 3s --health-retries 20
     env:
       CARGO_TARGET_DIR: target-server
       VDA_TEST_DATABASE_URL: postgres://vda:test-password@localhost:5432/vda
