@@ -1,0 +1,10 @@
+USE shop;
+CREATE TABLE customers (id bigint PRIMARY KEY, name varchar(255) NOT NULL, email varchar(255) NOT NULL, phone varchar(40));
+CREATE TABLE products (id bigint PRIMARY KEY, name varchar(255) NOT NULL, price decimal(12,2) NOT NULL);
+CREATE TABLE orders (id bigint PRIMARY KEY, customer_id bigint NOT NULL, ordered_at timestamp NOT NULL, status varchar(40) NOT NULL, FOREIGN KEY(customer_id) REFERENCES customers(id));
+CREATE TABLE order_items (id bigint PRIMARY KEY, order_id bigint NOT NULL, product_id bigint NOT NULL, quantity integer NOT NULL, unit_price decimal(12,2) NOT NULL, FOREIGN KEY(order_id) REFERENCES orders(id), FOREIGN KEY(product_id) REFERENCES products(id));
+SET SESSION cte_max_recursion_depth=30000;
+INSERT INTO customers WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n<3000) SELECT n,CONCAT('Customer ',n),CONCAT('customer',n,'@example.com'),CONCAT('+1555',LPAD(n,7,'0')) FROM seq;
+INSERT INTO products WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n<300) SELECT n,CONCAT('Product ',n),(n%100+1)*1.99 FROM seq;
+INSERT INTO orders WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n<9000) SELECT n,(n%3000)+1,TIMESTAMPADD(DAY,-(n%90),NOW()),IF(n%3=0,'pending','shipped') FROM seq;
+INSERT INTO order_items WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n<27000) SELECT n,(n%9000)+1,(n%300)+1,(n%5)+1,((n%300)%100+1)*1.99 FROM seq;

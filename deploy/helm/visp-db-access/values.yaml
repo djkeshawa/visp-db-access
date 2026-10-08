@@ -1,0 +1,41 @@
+replicaCount: 2
+image:
+  repository: visp-db-access
+  tag: '0.1.0'
+  pullPolicy: IfNotPresent
+existingSecret: vda-secrets
+# Required keys: database-url, master-key. Optional bootstrap keys below.
+bootstrapAdmin: false
+serviceAccount:
+  create: true
+  name: ''
+  annotations: {}
+  # For EKS IRSA, annotate the account with eks.amazonaws.com/role-arn.
+  # annotations:
+  #   eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/visp-db-access
+config:
+  cookieSecure: true
+  allowedCidrs: ''
+  trustProxyHeaders: false
+  trustedProxyCidrs: ''
+  allowPrivateTargets: false
+  metadataPoolSize: 20
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: '2', memory: 512Mi}
+service:
+  port: 8080
+ingress:
+  enabled: false
+  className: nginx
+  host: db-access.example.com
+  annotations: {}
+  tlsSecretName: vda-tls
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

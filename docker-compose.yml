@@ -1,0 +1,55 @@
+services:
+  metadata:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: vda
+      POSTGRES_PASSWORD: ${VDA_METADATA_PASSWORD:-vda-local-only}
+      POSTGRES_DB: vda
+    volumes:
+      - metadata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U vda -d vda']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    ports:
+      - '127.0.0.1:5432:5432'
+  visp-db-access:
+    build: .
+    ports: ['127.0.0.1:8080:8080']
+    environment:
+      VDA_DATABASE_URL: postgres://vda:${VDA_METADATA_PASSWORD:-vda-local-only}@metadata:5432/vda
+      VDA_MASTER_KEY: ${VDA_MASTER_KEY:?Generate a key with openssl rand -base64 32}
+      VDA_BOOTSTRAP_ADMIN_EMAIL: ${VDA_BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}
+      VDA_BOOTSTRAP_ADMIN_PASSWORD: ${VDA_BOOTSTRAP_ADMIN_PASSWORD:?Choose an administrator password of at least 12 characters}
+      VDA_COOKIE_SECURE: ${VDA_COOKIE_SECURE:-false}
+      VDA_ALLOWED_CIDRS: ${VDA_ALLOWED_CIDRS:-}
+      VDA_LOG_FORMAT: json
+    depends_on:
+      metadata:
+        condition: service_healthy
+    read_only: true
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    restart: unless-stopped
+  demo-postgres:
+    image: postgres:17
+    profiles: [demo]
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo-local-only
+      POSTGRES_DB: shop
+    volumes: ['./deploy/demo/postgres.sql:/docker-entrypoint-initdb.d/001-shop.sql:ro']
+    ports: ['127.0.0.1:5433:5432']
+  demo-mysql:
+    image: mysql:8.4
+    profiles: [demo]
+    environment:
+      MYSQL_ROOT_PASSWORD: demo-root-local-only
+      MYSQL_DATABASE: shop
+      MYSQL_USER: demo
+      MYSQL_PASSWORD: demo-local-only
+    volumes: ['./deploy/demo/mysql.sql:/docker-entrypoint-initdb.d/001-shop.sql:ro']
+    ports: ['127.0.0.1:3307:3306']
+volumes:
+  metadata:

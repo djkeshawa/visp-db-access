@@ -1,0 +1,122 @@
+/* Risk is the only color. All shared foundations live here. */
+:root {
+  --font-ui:
+    -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Inter', 'Segoe UI',
+    system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'JetBrains Mono Variable', 'JetBrains Mono', Menlo,
+    monospace;
+  --paper: #f3f4f6;
+  --surface: #ffffff;
+  --ink: #1a1d23;
+  --label-primary: var(--ink);
+  --label-secondary: color-mix(in srgb, var(--ink) 70%, transparent);
+  --label-tertiary: color-mix(in srgb, var(--ink) 38%, transparent);
+  --label-quaternary: color-mix(in srgb, var(--ink) 18%, transparent);
+  --graphite: var(--label-secondary);
+  --control-fill: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  --hover-fill: color-mix(in srgb, var(--ink) 8%, var(--surface));
+  --material: color-mix(in srgb, var(--surface) 80%, transparent);
+  --focus-ring: color-mix(in srgb, var(--ink) 64%, transparent);
+  --floating-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 8%), 0 2px 6px rgb(0 0 0 / 8%),
+    0 12px 32px rgb(0 0 0 / 12%);
+  --rule: color-mix(in srgb, var(--ink) 10%, transparent);
+  --subtle: #eceef1;
+  --env-prod: #c8242f;
+  --env-prod-soft: #fcecee;
+  --env-staging: #b7791f;
+  --env-staging-soft: #fcf1dd;
+  --env-staging-text: #855610;
+  --env-dev: #2f7d6d;
+  --env-dev-soft: #e7f3ef;
+  --env-dev-text: #286e60;
+  --env-dev-rail: #a5c8be;
+  --env-prod-action: #c8242f;
+  --on-risk: #ffffff;
+  --on-ink: #ffffff;
+  --primary-hover: #343a44;
+  --selection: #dce0e5;
+  --bg: var(--paper);
+  --text: var(--ink);
+  --muted: var(--graphite);
+  --border: var(--rule);
+  --success: var(--env-dev-text);
+  --success-bg: var(--env-dev-soft);
+  --warning: var(--env-staging-text);
+  --warning-bg: var(--env-staging-soft);
+  --danger: var(--env-prod);
+  --danger-bg: var(--env-prod-soft);
+  --info: var(--graphite);
+  --info-bg: var(--subtle);
+  --overlay: rgb(21 23 27 / 0.45);
+  --shadow: var(--floating-shadow);
+  --stroke: 1px;
+  --radius: 10px;
+  --radius-control: 7px;
+  --radius-panel: 10px;
+  --radius-dialog: 14px;
+  --text-xs: 12px;
+  --text-data: 13px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 17px;
+  --text-xl: 22px;
+  --text-title: 22px;
+  --text-metric: 28px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-sheet: 320ms;
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-popover: cubic-bezier(0.2, 0, 0, 1);
+  --motion-panel: 200ms;
+  --editor-default-height: 280px;
+  --receipt-max-height: 320px;
+  --preview-height: 96px;
+  color-scheme: light;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--paper);
+}
+:root[data-theme='dark'] {
+  --paper: #15171b;
+  --surface: #1c1f24;
+  --ink: #e8eaed;
+  --label-secondary: color-mix(in srgb, var(--ink) 70%, transparent);
+  --focus-ring: color-mix(in srgb, var(--ink) 48%, transparent);
+  --floating-shadow:
+    0 0 0 0.5px rgb(255 255 255 / 8%), 0 2px 6px rgb(0 0 0 / 20%),
+    0 12px 32px rgb(0 0 0 / 28%);
+  --rule: color-mix(in srgb, var(--ink) 12%, transparent);
+  --subtle: #282d34;
+  --env-prod: #f47780;
+  --env-prod-soft: #382328;
+  --env-staging: #e6b65c;
+  --env-staging-text: #e6b65c;
+  --env-staging-soft: #352d20;
+  --env-dev: #79c6b2;
+  --env-dev-soft: #20332e;
+  --env-dev-text: #79c6b2;
+  --env-dev-rail: #3b6258;
+  --on-ink: #15171b;
+  --primary-hover: #d0d4da;
+  --selection: #414954;
+  --overlay: rgb(0 0 0 / 0.65);
+  --shadow: var(--floating-shadow);
+  color-scheme: dark;
+}
