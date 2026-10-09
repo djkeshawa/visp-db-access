@@ -6,7 +6,7 @@ reports seriously.
 ## Reporting a vulnerability
 
 Please report vulnerabilities privately through GitHub's
-[private vulnerability reporting](https://github.com/djkeshawa/visp-db-access-oss/security/advisories/new)
+[private vulnerability reporting](https://github.com/djkeshawa/visp-db-access/security/advisories/new)
 rather than in public issues or pull requests.
 
 Include what you found, how to reproduce it, the affected version or commit,

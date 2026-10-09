@@ -4,6 +4,6 @@ description: Guarded production database access gateway
 type: application
 version: 0.1.0
 appVersion: 0.1.0
-home: https://github.com/djkeshawa/visp-db-access-oss
+home: https://github.com/djkeshawa/visp-db-access
 sources:
-  - https://github.com/djkeshawa/visp-db-access-oss
+  - https://github.com/djkeshawa/visp-db-access

@@ -70,7 +70,9 @@ table-qualified patterns when the query references the table), so aliases and
 computed expressions can still bypass it. Queries touching potentially masked
 tables can't serialize rows through JSON functions, row constructors or
 whole-row references, and their upstream error messages are hidden in responses
-and history.
+and history. The same rules cover `RETURNING` on writes, including inside
+data-modifying CTEs: renamed or derived masked columns and whole-row returns
+are denied.
 
 ## Network and targets
 

@@ -137,7 +137,19 @@ interface Analysis {
   statements: StatementAnalysis[];
   rewritten_sql: string | null;
   issues: Issue[];
+  suggestions: Suggestion[]; // advisory only; never change the verdict; empty when denied
 } // issues = flattened, incl. top-level
+
+interface Suggestion {
+  code: string; // see the analyze endpoint for the list
+  message: string;
+  fix?: Fix;
+}
+interface Fix {
+  label: string;
+  sql: string; // never executed by the server; the console applies it
+  action: 'replace' | 'new_tab'; // replace the editor text, or open alongside it
+}
 
 interface Column {
   name: string;
@@ -325,6 +337,12 @@ database, username, password, tls_mode, replica_host?, replica_port?, tags?}` â†
 ### Queries
 
 - `POST /clusters/:id/analyze` `{sql}` â†’ `Analysis` (read). Cheap; UI calls it debounced while typing.
+  `suggestions` are advisory performance hints: `select_star`, `add_limit`
+  (with a sample-`LIMIT` fix), `order_by_random`, `large_offset`,
+  `function_on_column`, `leading_wildcard`, `not_in_subquery`, `large_in_list`
+  and `preview_write` (a `SELECT COUNT(*)` of the rows an `UPDATE`/`DELETE`
+  would touch, opened in a new tab). They never change the verdict or the
+  executed SQL.
   `masked_data_serialization` is a blocking issue for whole-row/JSON serialization
   touching masked data; select individual columns so masking can be applied.
   MySQL executable comments (`/*!...*/`, `/*M!...*/`) are always denied with
