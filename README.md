@@ -96,9 +96,11 @@ visp-db-access is pre-1.0. The API and storage schema may still change between
 releases. Supported targets are PostgreSQL and MySQL (including MariaDB and their
 managed variants such as RDS, Aurora, Cloud SQL and Azure Database).
 
-Roadmap: RDS IAM authentication, GCP and Azure discovery, OIDC/SAML SSO and
-SCIM, group grants, just-in-time access requests, saved queries, distributed
-cancellation, durable audit delivery, more engines and bastion tunnels.
+Roadmap: RDS IAM authentication; GCP Cloud SQL and Azure discovery; OIDC/SAML
+SSO and SCIM; group grants; just-in-time access requests; saved queries;
+distributed query cancellation; durable audit delivery and SIEM export;
+classification-driven masking; MongoDB and SQL Server engines; SSH/bastion
+tunnels.
 
 ## Contributing and security
 

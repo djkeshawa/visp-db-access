@@ -63,11 +63,15 @@ users, under an advisory lock so concurrent replicas don't race.
 
 ## Docker
 
-The image builds the console and the Rust binary in separate stages and runs as
-a non-root user on a distroless base.
+Each release publishes an image to
+`ghcr.io/djkeshawa/visp-db-access:<version>`, plus a Linux x86_64 binary on the
+[releases page](https://github.com/djkeshawa/visp-db-access/releases). The image
+builds the console and the Rust binary in separate stages and runs as a
+non-root user on a distroless base.
 
 ```sh
-docker build -t visp-db-access .
+docker pull ghcr.io/djkeshawa/visp-db-access:0.1.0
+docker build -t visp-db-access .     # or build from source
 docker compose up --build            # gateway + metadata Postgres
 docker compose --profile demo up     # plus demo PostgreSQL and MySQL targets
 ```
@@ -81,9 +85,11 @@ an existing Secret with `database-url` and `master-key`, and optionally
 
 ```sh
 helm upgrade --install vda deploy/helm/visp-db-access \
-  --set image.repository=your-registry/visp-db-access \
   --set existingSecret=vda-secrets
 ```
+
+The chart uses the published image for its version; set `image.repository`
+and `image.tag` to run your own build.
 
 For AWS discovery on EKS, see [IRSA setup](DISCOVERY.md#eks-irsa).
 

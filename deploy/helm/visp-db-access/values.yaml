@@ -1,6 +1,6 @@
 replicaCount: 2
 image:
-  repository: visp-db-access
+  repository: ghcr.io/djkeshawa/visp-db-access
   tag: '0.1.0'
   pullPolicy: IfNotPresent
 existingSecret: vda-secrets

@@ -127,6 +127,19 @@ settings are listed at the top of the script.
 | `npm run screenshots:readme`               | Regenerate `docs/images/` from a mock server on port 5179                 |
 | `npm run audit:ui`, `npm run audit:states` | Capture every route and state with axe reports (mock server on port 5175) |
 
+## Releasing
+
+1. Set the new version in `Cargo.toml` (`workspace.package.version`),
+   `web/package.json`, and `version`, `appVersion` and `image.tag` in the Helm
+   chart, then run `cargo check` to update `Cargo.lock`.
+2. Move the `Unreleased` entries in `CHANGELOG.md` under the new version and
+   date, and update the comparison links at the bottom.
+3. Commit, then tag and push: `git tag -a v0.2.0 -m v0.2.0 && git push origin v0.2.0`.
+
+The `Release` workflow checks that the tag matches these versions, publishes
+the image to `ghcr.io/djkeshawa/visp-db-access`, and creates a GitHub release
+with the changelog section and a Linux x86_64 binary.
+
 ## Conventions
 
 - Rust: `unsafe_code` is forbidden and `unwrap`, `expect` and `panic!` are

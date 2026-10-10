@@ -1,0 +1,108 @@
+name: Release
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: read
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: version
+        name: Check the tag matches the crate, chart and changelog versions
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          crate=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          chart=$(sed -n 's/^appVersion: //p' deploy/helm/visp-db-access/Chart.yaml)
+          image=$(sed -n "s/^  tag: '\(.*\)'/\1/p" deploy/helm/visp-db-access/values.yaml)
+          for found in "$crate" "$chart" "$image"; do
+            if [[ $found != "$version" ]]; then
+              echo "::error::Tag $GITHUB_REF_NAME does not match version $found"; exit 1
+            fi
+          done
+          grep -q "^## \[$version\]" CHANGELOG.md || { echo "::error::CHANGELOG.md has no $version section"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  binary:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22', cache: npm, cache-dependency-path: web/package-lock.json}
+      - run: npm ci && npm run build
+        working-directory: web
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --locked --release -p vda-server
+      - name: Package
+        run: |
+          name="visp-db-access-${{ needs.check.outputs.version }}-x86_64-linux-gnu"
+          mkdir "$name"
+          cp target/release/visp-db-access LICENSE NOTICE README.md CHANGELOG.md "$name/"
+          tar -czf "$name.tar.gz" "$name"
+          sha256sum "$name.tar.gz" > "$name.tar.gz.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary
+          path: visp-db-access-*.tar.gz*
+
+  image:
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  release:
+    needs: [check, binary, image]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: binary}
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {on=1; next}
+            on && /^## \[/ {exit}
+            on && /^\[.*\]: / {exit}
+            on {print}
+          ' CHANGELOG.md > notes.md
+          printf '\nDocker image: `%s:%s`\n' "$IMAGE" "$VERSION" >> notes.md
+          prerelease=""
+          [[ $VERSION == *-* ]] && prerelease="--prerelease"
+          gh release create "$GITHUB_REF_NAME" --title "v$VERSION" --notes-file notes.md \
+            $prerelease visp-db-access-*.tar.gz*

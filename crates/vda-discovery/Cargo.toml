@@ -3,7 +3,7 @@ name = "vda-discovery"
 description = "Read-only AWS RDS and Aurora database discovery"
 version.workspace = true
 edition.workspace = true
-rust-version = "1.91.1"
+rust-version.workspace = true
 license.workspace = true
 
 [features]

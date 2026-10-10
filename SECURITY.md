@@ -20,7 +20,8 @@ address guard; authentication and session flaws.
 
 ## Supported versions
 
-The project is pre-1.0; fixes land on the `main` branch.
+The project is pre-1.0. Fixes land on the `main` branch and ship in the next
+release; only the latest release is supported.
 
 ## How the gateway protects databases
 

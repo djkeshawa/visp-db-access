@@ -165,6 +165,7 @@ Setup and operations are covered in [AWS discovery](DISCOVERY.md).
 ## Roadmap
 
 RDS IAM authentication; GCP Cloud SQL and Azure discovery; OIDC/SAML SSO and
-SCIM; groups; just-in-time access requests; saved queries; result export;
-MongoDB and SQL Server engines; SSH/bastion tunnels; classification-driven
-masking; SIEM audit export.
+SCIM; group grants; just-in-time access requests; saved queries; distributed
+query cancellation; durable audit delivery and SIEM export;
+classification-driven masking; MongoDB and SQL Server engines; SSH/bastion
+tunnels.
